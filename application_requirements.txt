@@ -1,0 +1,62 @@
+# Application Summary - Quotient
+
+Quotient is a web-based social networking application designed for community-driven interactions. Built using Node.js, Express, and MongoDB, the platform allows users to join specialized communities, share posts, engage in discussions through comments, and react with a variety of emojis. The application features user authentication, a personalized home feed based on joined communities, notifications for user interactions, and a profile management system.
+
+## Functional Requirements
+
+1. **User Authentication & Account Management**
+   - User registration with name, email, username, and password.
+   - Login functionality with session persistence using express-session.
+   - User logout and session destruction.
+   - Profile view showing user-specific activity (posts created).
+   - Current user API to provide session information to the frontend.
+
+2. **Community Management**
+   - Create new communities with a name (automatically prefixed with 'quo.'), age limit, and description.
+   - Search for communities using the 'quo.' prefix in the search bar.
+   - Join and leave communities to customize the home feed.
+   - Validation to ensure a user can only post in communities they have joined.
+
+3. **Post Management**
+   - Create posts (title and brief) within a specific community.
+   - Dynamic home feed displaying posts from all communities the user has joined.
+   - Search functionality to find specific posts by keywords in the title or brief.
+   - Individual post view showing full details and interaction history.
+
+4. **Engagement & Interaction**
+   - Commenting system allowing users to discuss specific posts.
+   - Multi-emoji reaction system (👍, 😂, 😢, 🔥, 🙏) with toggle functionality.
+   - Notification system that alerts users to new comments and reactions on their own posts.
+
+## Non-Functional Requirements
+
+1. **Data Persistence**
+   - Persistent storage using MongoDB with Mongoose ODM.
+   - Schema-based data modeling for Users, Posts, and Communities.
+
+2. **Performance & Scalability**
+   - Asynchronous API calls (AJAX/Fetch) for dynamic content loading without page refreshes.
+   - Efficient search logic using Regex-based queries for posts and communities.
+
+3. **Usability & Interface**
+   - Clean, modern UI with a responsive layout.
+   - Intuitive navigation with a persistent sidebar for community access.
+   - Contextual search bar that adapts based on the search prefix.
+
+4. **Security (Security Audit Findings - Current Version)**
+   - **Password Security:** Passwords are currently stored in plain text, which is a critical security flaw.
+   - **Session Management:** Session secrets are hardcoded in the source code, and cookies are not configured for 'secure' or 'httpOnly' modes.
+   - **Input Validation:** Lack of robust server-side validation and sanitization, making the app vulnerable to XSS and NoSQL Injection.
+   - **Authentication:** Some API endpoints lack strict authorization checks.
+   - **Error Handling:** Generic error responses that could potentially leak system information.
+
+## Security Recommendations for "Secure Application Development" Subject
+
+1. **Implement Password Hashing:** Use `bcrypt` or `argon2` to hash passwords before storing them in the database.
+2. **Secure Session Configuration:** Move the session secret to environment variables and enable `secure: true` (for HTTPS) and `httpOnly: true`.
+3. **Input Sanitization:** Use libraries like `dompurify` for the frontend and `express-validator` for the backend to sanitize all user inputs.
+4. **NoSQL Injection Protection:** Avoid using direct user input in MongoDB queries; use Mongoose built-in sanitization or parameterization.
+5. **CSRF Protection:** Implement tokens to prevent Cross-Site Request Forgery.
+6. **Rate Limiting:** Use `express-rate-limit` to prevent brute-force attacks on login and registration endpoints.
+7. **Security Headers:** Use `helmet` middleware to set various security-related HTTP headers.
+8. **Secure Environment Variables:** Use a `.env` file for sensitive information like MongoDB URIs and secrets.
